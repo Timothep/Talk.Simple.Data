@@ -1,0 +1,52 @@
+Kannt ihr mal raten was diese Stücken Code machen?
+
+/* Erste Stück */
+class HttpModule
+{
+	public HttpModule()
+	{
+		Get["/"] = parameters => return View("home");
+
+		Post["/user/{id}"] = parameters => 
+		{
+			SaveSomethingInTheDB(parameters);
+			return Response.AsRedirect("/");
+		};
+	}
+}
+
+Wie die Schlüsselwörter "Http", "Get" und "Post" euch verraten, es handelt sich um ein Art Http Framework. Mit ein Tick Fantasie könnte man sogar ahanen dass es sich um eine Klasse
+
+/* Zweite Stück */
+var pagedUsaCities = db.city.FindAllByCountryCode("USA")
+							.Skip(20).Take(20);
+
+var majorUsCities = db.city.FindAll(db.city.CountryCode == "USA")
+						   .Where(db.city.Population > 1000000);
+
+Eine Web-Applikation zu schreiben sollte purer Spaß sein. Ein neues Projekt aufzubauen sollte reibungslos funktionieren ohne Gänsehaut beim Gedanken, verschiedene Frameworks und Tools zusammen zu führen. Die .NET-Welt außerhalb von Microsoft wuchert nicht so wild wie bei anderen Technologien, aber im Open-Source-Universum erscheinen doch ab und zu beeindruckende Projekte: NancyFx und Simple.Data sind zwei davon.
+
+------ http://www.wordle.net/create: ExpressWayFree / RounderEdges / HalfHalf
+
+Simple.Data Simple.Data 
+Database Database Database 
+SQL 
+MongoDB
+Query Query Query
+Clauses
+Transaction
+StoredProcedure
+MarkRendle
+dynamic dynamic dynamic
+C#
+.NET
+
+-------------------- FIRST DEMO
+
+var db = Database.OpenConnection(@"Data Source=.\SQLEXPRESS;Initial Catalog=world;Integrated Security=True");
+
+var cities = db.city.FindAllByCountryCode("USA").ToList();
+
+foreach(var city in cities)
+	Console.WriteLine(city.Name);
+
