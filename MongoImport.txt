@@ -1,0 +1,1 @@
+mongoimport --db world --collection city --file world.json --jsonArray
