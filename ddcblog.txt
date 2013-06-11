@@ -41,12 +41,57 @@ dynamic dynamic dynamic
 C#
 .NET
 
--------------------- FIRST DEMO
+FOR THE DEMOS
+- Install MongoDB
+	- Prepare a shortcut to start the server
+	- Check that MONGOVUE works and add a shortcut
 
-var db = Database.OpenConnection(@"Data Source=.\SQLEXPRESS;Initial Catalog=world;Integrated Security=True");
+-#################-
+--   First demo  --
+-#################-
+
+const string conStr = @"Data Source=.\SQLEXPRESS;Initial Catalog=world;Integrated Security=True";
+var db = Database.OpenConnection(conStr);
+
+//const string conStr = @"mongodb://localhost:27017/world";
+//dynamic db = Database.Opener.OpenMongo(conStr);
 
 var cities = db.city.FindAllByCountryCode("USA").ToList();
 
 foreach(var city in cities)
 	Console.WriteLine(city.Name);
 
+-#################-
+-- Hands On CRUD --
+-#################-
+
+-----INSERT--------
+db.city.Insert(Name:"AAA"); //Throws an exception
+-------------------
+db.city.Insert(ID:42); //Throws an exception
+-------------------
+db.city.Insert(ID:0);
+-------------------
+internal class City
+{
+    public string Name { get; set; }
+}
+db.city.Insert(new City{Name = "AAA"});
+-------------------
+internal class City
+    {
+        public Int32 ID { get; set; }
+        public string Name { get; set; }
+    }
+db.city.Insert(new City{ ID = 42424242, Name = "AAA"});
+----UPDATE---------
+db.city.UpdateById(Id:42424242, Name:"BBB");
+-------------------
+var city = db.city.Get(42424242);
+city.Name = "CCC";
+db.city.Update(city);
+----DELETE---------
+db.city.DeleteByName("CCC");
+-------------------
+var city = db.city.Get(0);
+db.city.Delete(city);
