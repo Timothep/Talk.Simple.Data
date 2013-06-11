@@ -45,6 +45,8 @@ FOR THE DEMOS
 - Install MongoDB
 	- Prepare a shortcut to start the server
 	- Check that MONGOVUE works and add a shortcut
+	- Add "city, results" as a Watch variable
+	- Display the output window
 
 -#################-
 --   First demo  --
@@ -62,7 +64,7 @@ foreach(var city in cities)
 	Console.WriteLine(city.Name);
 
 -#################-
--- Hands On CRUD --
+-- Hands On C_UD --
 -#################-
 
 -----INSERT--------
@@ -95,3 +97,20 @@ db.city.DeleteByName("CCC");
 -------------------
 var city = db.city.Get(0);
 db.city.Delete(city);
+
+-#################-
+-- Hands On _R__ --
+-#################-
+
+var cities = db.city.All(); //Turns no result in debug mode
+var cities = db.city.All().ToList();
+-------------------
+var city = db.city.Get(0); //Look for the TOP1 in the output window#
+-------------------
+var city = db.city.Find(db.city.Name == "Paris");
+var city = db.city.Find(db.city.Name == "Paris" && db.city.CountryCode == "FRA");
+-------------------
+var cities = db.city.FindAll(db.city.CountryCode == "FRA").ToList();
+var cities = db.city.FindAll(db.city.CountryCode == "FRA" && db.city.Population > 1000000).ToList();
+-------------------
+var cities = db.city.FindAllByCountryCode("FRA").ToList();
