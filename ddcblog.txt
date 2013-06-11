@@ -114,3 +114,12 @@ var cities = db.city.FindAll(db.city.CountryCode == "FRA").ToList();
 var cities = db.city.FindAll(db.city.CountryCode == "FRA" && db.city.Population > 1000000).ToList();
 -------------------
 var cities = db.city.FindAllByCountryCode("FRA").ToList();
+
+-#################-
+-- Hands On CAST --
+-#################-
+City city = db.city.Get(0); //Implicit cast
+-------------------
+var cities = db.city.FindAllByCountryCode("FRA").ToList(); //Deploy in debugger
+IEnumerable<City> cities = db.city.FindAllByCountryCode("FRA").ToList(); // Exception
+IEnumerable<City> cities = db.city.FindAllByCountryCode("FRA").ToList<City>(); //Deploy in debugger
