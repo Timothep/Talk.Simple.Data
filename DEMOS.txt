@@ -15,68 +15,66 @@ var db = Database.OpenConnection(conStr);
 //const string conStr = @"mongodb://localhost:27017/world";
 //dynamic db = Database.Opener.OpenMongo(conStr);
 
-var cities = db.city.FindAllByCountryCode("USA").ToList();
+var albums = db.album.FindAllByArtistId(1);
 
-foreach(var city in cities)
-	Console.WriteLine(city.Name);
+foreach (var album in albums)
+    Console.WriteLine(album.Title);
 
 -#################-
 -- Hands On C_UD --
 -#################-
 
 -----INSERT--------
-db.city.Insert(Name:"AAA"); //Throws an exception
+ db.albums.Insert(Title: "AAA"); //GenreId NULL Exception
 -------------------
-db.city.Insert(ID:42); //Throws an exception
+db.albums.Insert(GenreId: 1, ArtistId: 1, Title: "AAA", Price: 9);
 -------------------
-db.city.Insert(ID:0);
--------------------
-internal class City
+internal class Album
 {
-    public string Name { get; set; }
+    public Int32 GenreId { get; set; }
 }
-db.city.Insert(new City{Name = "AAA"});
+db.albums.Insert(new Album { GenreId = 1});
 -------------------
-internal class City
-    {
-        public Int32 ID { get; set; }
-        public string Name { get; set; }
-    }
-db.city.Insert(new City{ ID = 42424242, Name = "AAA"});
+internal class Album
+{
+    public Int32 GenreId { get; set; }
+    public Int32 ArtistId { get; set; }
+    public String Title { get; set; }
+    public Int32 Price { get; set; }
+}
+db.albums.Insert(new Album { GenreId = 1, ArtistId = 1, Title = "AAA", Price = 9});
 ----UPDATE---------
-db.city.UpdateById(Id:42424242, Name:"BBB");
+db.albums.UpdateByAlbumId(AlbumId: 675, Title: "BBB");
 -------------------
-var city = db.city.Get(42424242);
-city.Name = "CCC";
-db.city.Update(city);
+var album = db.albums.Get(675);
+album.Title = "CCC";
+db.albums.Update(album);
 ----DELETE---------
-db.city.DeleteByName("CCC");
+db.albums.DeleteByTitle("CCC");
 -------------------
-var city = db.city.Get(0);
-db.city.Delete(city);
+var album = db.Albums.Get(677);
+db.Albums.Delete(album);
 
 -#################-
 -- Hands On _R__ --
 -#################-
 
-var cities = db.city.All(); //Turns no result in debug mode
-var cities = db.city.All().ToList();
+var albums = db.Albums.All(); //Show "Children Could not be evaluated" in debug mode
+var albums = db.Albums.All().ToList();
 -------------------
-var city = db.city.Get(0); //Look for the TOP1 in the output window#
+var album = db.Albums.Get(392); //Look for the TOP1 in the output window
 -------------------
-var city = db.city.Find(db.city.Name == "Paris");
-var city = db.city.Find(db.city.Name == "Paris" && db.city.CountryCode == "FRA");
+var album = db.Albums.Find(db.Albums.Title == "Master Of Puppets");
 -------------------
-var cities = db.city.FindAll(db.city.CountryCode == "FRA").ToList();
-var cities = db.city.FindAll(db.city.CountryCode == "FRA" && db.city.Population > 1000000).ToList();
+var albums = db.Albums.FindAll(db.Albums.ArtistId == 50).ToList();
 -------------------
-var cities = db.city.FindAllByCountryCode("FRA").ToList();
+var albums = db.Albums.FindAllByArtistId(50).ToList();
 
 -#################-
 -- Hands On CAST --
 -#################-
-City city = db.city.Get(0); //Implicit cast
+Album album = db.albums.Get(392); //Works as is
 -------------------
-var cities = db.city.FindAllByCountryCode("FRA").ToList(); //Deploy in debugger
-IEnumerable<City> cities = db.city.FindAllByCountryCode("FRA").ToList(); // Exception
+var cities = db.city.FindAllByCountryCode("FRA").ToList(); //Show the necessity to enumerate in the debugger
+IEnumerable<City> cities = db.city.FindAllByCountryCode("FRA").ToList(); // Exception, requires explicit cast
 IEnumerable<City> cities = db.city.FindAllByCountryCode("FRA").ToList<City>(); //Deploy in debugger
