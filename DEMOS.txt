@@ -73,8 +73,57 @@ var albums = db.Albums.FindAllByArtistId(50).ToList();
 -#################-
 -- Hands On CAST --
 -#################-
+
 Album album = db.albums.Get(392); //Works as is
 -------------------
 var cities = db.city.FindAllByCountryCode("FRA").ToList(); //Show the necessity to enumerate in the debugger
 IEnumerable<City> cities = db.city.FindAllByCountryCode("FRA").ToList(); // Exception, requires explicit cast
 IEnumerable<City> cities = db.city.FindAllByCountryCode("FRA").ToList<City>(); //Deploy in debugger
+
+-#################-
+-- Hands On LAZY --
+-#################-
+
+var lazyArtist = db.Artists.Get(50);
+Console.WriteLine("Artist " + lazyArtist.Name);
+foreach (var album in lazyArtist.Albums) //Where does Albums come from? Show the second SQL select in the output
+    Console.WriteLine("Album " + album.Title);
+-------------------
+internal class Artist
+{
+    public Int32 ArtistId { get; set; }
+    public String Name { get; set; }
+    public IEnumerable<Album> Albums = new List<Album>(0);
+}
+Artist lazyArtist = db.Artists.Get(50);
+Console.WriteLine("Artist " + lazyArtist.Name);
+foreach (var album in lazyArtist.Albums)//No elements lazy-fetched
+	Console.WriteLine("Album " + album.Title);
+
+-#################-
+-- HandsOn EAGER --
+-#################-
+
+var eagerArtist = db.Artists.WithAlbums().Get(22);
+Console.WriteLine("Artist " + eagerArtist.Name);
+
+foreach (var album in eagerArtist.Albums)
+    Console.WriteLine("Album " + album.Title);
+
+-#################-
+-- HandsOn NATURAL JOINS --
+-#################-
+
+ var albums = db.Albums
+ 				.FindAllByGenreId(1)
+    			.Select(db.Albums.Title, db.Albums.Genre.Name) //Chaining tables works if referential integrity is followed
+    			.ToList();
+-------------------
+var albumDetails = db.Albums.FindAllByArtistId(50)
+				            .Select(
+				            	db.Albums.Title,
+				                db.Albums.ArtistId,
+				                db.Albums.Artist.Name)
+				            .LeftJoin(db.Artists).On(ArtistId: db.Albums.ArtistId); //Explain the LeftJoin and On
+foreach (var ad in albumDetails)
+    Console.WriteLine("{0} (Id={1}): {2}", ad.Name, ad.ArtistId, ad.Title);
