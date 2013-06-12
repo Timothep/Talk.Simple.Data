@@ -7,18 +7,16 @@ namespace Simple.Data.First.Demo
     {
         private static void Main(string[] args)
         {
-            const string conStr = @"Data Source=.\SQLEXPRESS;Initial Catalog=world;Integrated Security=True";
+            const string conStr = @"Data Source=.\SQLEXPRESS;Initial Catalog=MvcMusicStore;Integrated Security=True";
             var db = Database.OpenConnection(conStr);
 
-            //const string conStr = @"mongodb://localhost:27017/world";
+            //const string conStr = @"mongodb://localhost:27017/MvcMusicStore";
             //dynamic db = Database.Opener.OpenMongo(conStr);
 
-            var cities = db.city.FindAllByCountryCode("USA").Where(db.city.Population > 1000000);
+            var albums = db.album.FindAllByArtistId(1);
 
-            foreach (var city in cities)
-                Console.WriteLine(city.Name);
-
-            Console.ReadLine();
+            foreach (var album in albums)
+                Console.WriteLine(album.Title);
         }
     }
 }

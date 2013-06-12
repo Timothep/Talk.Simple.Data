@@ -1,1 +1,6 @@
-mongoimport --db world --collection city --file world.json --jsonArray
+1- Export from SQL ManagementServer
+2- Tick the "Add column names in the first row"
+3- Save to text file
+4- ConvertCSV to JSON on http://www.cparker15.com/code/utilities/csv-to-json/
+5- If need be convert the strings into numbers via replace all "(\d+)" -> $1 in SublimeText2
+6- Import JSON in MongoDB via: mongoimport --db MvcMusicStore --collection album --file D:\WildTalks\Talk.Simple.Data\DBData\MvcMusicStore.Albums.json --jsonArray
