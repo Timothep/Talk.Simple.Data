@@ -76,9 +76,9 @@ var albums = db.Albums.FindAllByArtistId(50).ToList();
 
 Album album = db.albums.Get(392); //Works as is
 -------------------
-var cities = db.city.FindAllByCountryCode("FRA").ToList(); //Show the necessity to enumerate in the debugger
-IEnumerable<City> cities = db.city.FindAllByCountryCode("FRA").ToList(); // Exception, requires explicit cast
-IEnumerable<City> cities = db.city.FindAllByCountryCode("FRA").ToList<City>(); //Deploy in debugger
+var albums = db.albums.FindAllByGenreId(1).ToList(); //Show the necessity to enumerate in the debugger
+IList<Album> albums = db.albums.FindAllByGenreId(1).ToList(); // Exception, requires explicit cast
+IList<Album> albums = db.albums.FindAllByGenreId(1).ToList<Album>(); //Deploy in debugger
 
 -#################-
 -- Hands On LAZY --
@@ -93,7 +93,7 @@ internal class Artist
 {
     public Int32 ArtistId { get; set; }
     public String Name { get; set; }
-    public IEnumerable<Album> Albums = new List<Album>(0);
+    public IList<Album> Albums = new List<Album>(0);
 }
 Artist lazyArtist = db.Artists.Get(50);
 Console.WriteLine("Artist " + lazyArtist.Name);
@@ -111,7 +111,7 @@ foreach (var album in eagerArtist.Albums)
     Console.WriteLine("Album " + album.Title);
 
 -#################-
--- HandsOn NATURAL JOINS --
+-- HandsOn LAZY JOINS --
 -#################-
 
  var albums = db.Albums
@@ -119,7 +119,7 @@ foreach (var album in eagerArtist.Albums)
     			.Select(db.Albums.Title, db.Albums.Genre.Name) //Chaining tables works if referential integrity is followed
     			.ToList();
 -------------------
-var albumDetails = db.Albums.FindAllByArtistId(50)
+var albumDetails = db.Albums.FindAllByArtistId(50) //Remember, lazy loading so no casting possible
 				            .Select(
 				            	db.Albums.Title,
 				                db.Albums.ArtistId,
@@ -127,3 +127,18 @@ var albumDetails = db.Albums.FindAllByArtistId(50)
 				            .LeftJoin(db.Artists).On(ArtistId: db.Albums.ArtistId); //Explain the LeftJoin and On
 foreach (var ad in albumDetails)
     Console.WriteLine("{0} (Id={1}): {2}", ad.Name, ad.ArtistId, ad.Title);
+
+-#################-
+-- HandsOn EAGER JOINS --
+-#################-
+
+public class Album
+{
+    public int AlbumId { get; set; }
+    ...
+    public Artist Artist { get; set; }
+    public Artist BandInfo { get; set; }
+}
+Album dbjf = db.Albums.WithArtist().Get(386);
+IList<Album> hjf = db.Albums.All().With(db.Albums.Artists.As("BandInfo")).ToList<Album>();
+-------------------
