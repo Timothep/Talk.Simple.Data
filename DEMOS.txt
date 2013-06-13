@@ -2,8 +2,9 @@ FOR THE DEMOS
 - Install MongoDB
 	- Prepare a shortcut to start the server
 	- Check that MONGOVUE works and add a shortcut
-	- Add "city, results" as a Watch variable
+    - Start SQL Mgmt Studio and display Albums
 	- Display the output window
+    - Open the Simple.Data.First.Demo and try it out with mongo and sql
 
 -#################-
 --   First demo  --
