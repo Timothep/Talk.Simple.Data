@@ -1,0 +1,3 @@
+Data Source=.\SQLEXPRESS;Initial Catalog=MvcMusicStore;Integrated Security=True
+
+mongodb://localhost:27017/MvcMusicStore
