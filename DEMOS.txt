@@ -81,50 +81,78 @@ var albums = db.albums.FindAllByGenreId(1).ToList(); //Show the necessity to enu
 IList<Album> albums = db.albums.FindAllByGenreId(1).ToList(); // Exception, requires explicit cast
 IList<Album> albums = db.albums.FindAllByGenreId(1).ToList<Album>(); //Deploy in debugger
 
--#################-
--- Hands On LAZY --
--#################-
+-######################-
+-- Hands On PRE JOINS --
+-######################-
 
-var lazyArtist = db.Artists.Get(50);
-Console.WriteLine("Artist " + lazyArtist.Name);
-foreach (var album in lazyArtist.Albums) //Where does Albums come from? Show the second SQL select in the output
-    Console.WriteLine("Album " + album.Title);
+var artist = db.artists.Get(50);
+foreach (var album in artist.Albums) //Where does Albums come from?
+    Console.WriteLine(album.Title);  //Show the second SQL select in the output
 -------------------
 internal class Artist
 {
     public Int32 ArtistId { get; set; }
     public String Name { get; set; }
-    public IList<Album> Albums = new List<Album>(0);
+    public IList<Album> Albums { get; set; }
 }
-Artist lazyArtist = db.Artists.Get(50);
-Console.WriteLine("Artist " + lazyArtist.Name);
-foreach (var album in lazyArtist.Albums)//No elements lazy-fetched
-	Console.WriteLine("Album " + album.Title);
+Artist artist = db.Artists.Get(50);
+foreach (var album in artist.Albums)//No elements lazy-fetched
+	Console.WriteLine(album.Title);
+-------------------
+var artist = db.Artists.WithAlbums().Get(22);
+foreach (var album in artist.Albums)//Elements are correctly lazy-fetched
+    Console.WriteLine(album.Title);
 
--#################-
--- HandsOn EAGER --
--#################-
+-######################-
+-- HandsOn POST JOINS --
+-######################-
 
-var eagerArtist = db.Artists.WithAlbums().Get(22);
-Console.WriteLine("Artist " + eagerArtist.Name);
-
-foreach (var album in eagerArtist.Albums)
-    Console.WriteLine("Album " + album.Title);
-
--#################-
--- HandsOn LAZY JOINS --
--#################-
-??????????????????????????????????????? WHY THE FUCK IS THIS A LAZY LOADING ??????????????????????????????????????? -> https://groups.google.com/forum/?fromgroups#!topic/simpledata/VOh6r4F71n8
- var albums = db.Albums
+var albums = db.Albums
  				.FindAllByGenreId(1)
-    			.Select(db.Albums.Title, db.Albums.Genre.Name) //Chaining tables works if referential integrity is followed
+    			.Select(db.Albums.Title, db.Albums.Genre.Name) //Chaining tables eager loads
     			.ToList();
 -------------------
-var albumDetails = db.Albums.FindAllByArtistId(50) //Remember, lazy loading so no casting possible
+IList<Album> albums = db.Albums
+                .FindAllByGenreId(1)
+                .Select(db.Albums.Title, db.Albums.Genre.Name) //Name is obviously not casted
+                .ToList<Album>();
+-------------------
+internal class Album
+{
+    ...
+    public string Name { get; set; } //Add a Name -> works
+}
+-------------------
+internal class Album
+{
+    ...
+    public string GenreName { get; set; }
+}
+IList<Album> albums = db.Albums
+                .FindAllByGenreId(1)
+                .Select(db.Albums.Title, db.Albums.Genre.Name.As("GenreName")) //Introduce AS
+                .ToList<Album>();
+-------------------
+var albumsWith = db.Albums.All().WithArtists().ToList(); //Artists are joined as a dynamic sub-element
+-------------------
+//Display all the albums of a band, the band name and genre of the album (join on 3 tables)
+var albums = db.Albums.FindAllByArtistId(50)
+               .Select(
+                   db.Albums.Artist.Name.As("ArtistName"),  //First Join
+                   db.Albums.Title,
+                   db.Albums.Genre.Name.As("GenreName")     //Second Join
+                   )
+               .LeftJoin(db.Artist).On(db.Artists.ArtistId == db.Albums.ArtistId)   //Join
+               .LeftJoin(db.Genre).On(db.Genre.GenreId == db.Albums.GenreId)        //Join
+               .ToList();
+-------------------
+-------------------
+-------------------
+var albumDetails = db.Albums.FindAllByArtistId(50)
 				            .Select(
 				            	db.Albums.Title,
 				                db.Albums.ArtistId,
-				                db.Albums.Artist.Name)
+				                db.Albums.Artist.Name) //This alone would be ok if no casting is performed
 				            .LeftJoin(db.Artists).On(ArtistId: db.Albums.ArtistId); //Explain the LeftJoin and On
 foreach (var ad in albumDetails)
     Console.WriteLine("{0} (Id={1}): {2}", ad.Name, ad.ArtistId, ad.Title);
