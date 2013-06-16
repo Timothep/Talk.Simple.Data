@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Simple.Data.First.Demo")]
+[assembly: AssemblyTitle("NugetPreloadedDemo")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Simple.Data.First.Demo")]
+[assembly: AssemblyProduct("NugetPreloadedDemo")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("72017816-5a52-4036-a6ce-12ce83e40e30")]
+[assembly: Guid("6f096e62-8466-4db0-8c87-883d65a56bba")]
 
 // Version information for an assembly consists of the following four values:
 //
