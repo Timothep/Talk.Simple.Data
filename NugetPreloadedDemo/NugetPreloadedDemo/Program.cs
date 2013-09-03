@@ -1,4 +1,7 @@
-﻿using Simple.Data;
+﻿using System;
+using System.Collections.Generic;
+using Simple.Data;
+using Simple.Data.MongoDB;
 
 namespace NugetPreloadedDemo
 {
@@ -7,7 +10,6 @@ namespace NugetPreloadedDemo
         static void Main()
         {
             const string sqlConnString = @"Data Source=.\SQLEXPRESS;Initial Catalog=MvcMusicStore;Integrated Security=True";
-
         }
     }
 }
